@@ -23,30 +23,32 @@ The central question of the project is: **to what extent does gold has to other 
 
  The dataset introduces a comprehensive dataframe with columns of gameplay metrics and match outcomes from professional League of Legends esports matches. There are 80904 rows and 161 columns in this dataset. However, only a number of columns are important to the project. Here’s a brief introduction to each of these columns:
 
- 	- ==league==: This column identifies the professional esports league in which the match was played (e.g., LCS, LEC, LCK). It provides context about the level of competition and regional influences on gameplay strategies and dynamics.
+ 	- `league`: This column identifies the professional esports league in which the match was played (e.g., LCS, LEC, LCK). It provides context about the level of competition and regional influences on gameplay strategies and dynamics.
 
- 	- ==position==: This column specifies the in-game role or lane assigned to a player during the match. Common positions in League of Legends include: top, jungle, mid, bot, and sup. 
+ 	- `position`: This column specifies the in-game role or lane assigned to a player during the match. Common positions in League of Legends include: top, jungle, mid, bot, and sup. 
 
- 	- ==result==: This column represents the outcome of the match for the corresponding team or player, typically encoded as a binary value: 1 indicates a win and 0 indicates a loss.
+ 	- `result`: This column represents the outcome of the match for the corresponding team or player, typically encoded as a binary value: 1 indicates a win and 0 indicates a loss.
 
- 	- ==kills==: This column indicates the number of enemy champions a player or team has successfully eliminated during the match.
+ 	- `kills`: This column indicates the number of enemy champions a player or team has successfully eliminated during the match.
 
- 	- ==deaths==: This column represents the number of times a player or champion was eliminated by the enemy team during the match.
+ 	- `deaths`: This column represents the number of times a player or champion was eliminated by the enemy team during the match.
 
- 	- ==assists==: This column captures the number of times a player contributed to the elimination of an enemy champion, without landing the final blow.
+ 	- `assists`: This column captures the number of times a player contributed to the elimination of an enemy champion, without landing the final blow.
 
- 	- ==earned gpm==: This column represents the average amount of gold a player or team earns per minute during the match. It is a critical metric for assessing economic efficiency and resource generation.
+ 	- `earned gpm`: This column represents the average amount of gold a player or team earns per minute during the match. It is a critical metric for assessing economic efficiency and resource generation.
 
- 	- ==golddiffat10==: This column represents the difference in total gold between a player’s team and the opposing team at the 10-minute mark in the game.
+ 	- `golddiffat10`: This column represents the difference in total gold between a player’s team and the opposing team at the 10-minute mark in the game.
 
- 	- ==golddiffat25==: This column represents the difference in total gold between a player’s team and the opposing team at the 25-minute mark in the game.
+ 	- `golddiffat25`: This column represents the difference in total gold between a player’s team and the opposing team at the 25-minute mark in the game.
 
 
 ## Data Cleaning and Exploratory Data Analysis
 
 ### Data Cleaning
 
-For the purpose of data cleaning, I will only keep the important columns and dropping other irrelevant columns: ==league==, ==position==, ==result==, ==kills==, ==deaths==, ==assists==, ==earned gpm==, ==golddiffat10==, and ==golddiffat25==. In the cleaned dataset, there are 17268 rows and  10 columns, representing that there are 17268 observations and 10 features. 
+For the purpose of data cleaning, I will only keep the important columns and dropping other irrelevant columns: `league`, `position`, `result`, `kills`, `deaths`, `assists`, `earned gpm`, `golddiffat10`, and `golddiffat25`. In the cleaned dataset, there are 80904 rows and 10 columns, representing that there are 80904 observations and 10 features. 
+
+Below is the head of our filtered dataframe.
 
 | league | position |   result |   kills |   deaths |   assists |   dpm      | 	earned gpm |   golddiffat10 | golddiffat25 |
 |:-------|:---------|---------:|--------:|---------:|----------:|-----------:|------------:|---------------:|:-------------|
