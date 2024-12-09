@@ -99,7 +99,7 @@ This scatter plot illustrates the relationship between the number of kills and e
 
 ### Interesting Aggregates
 
-|      |    kills, lose |   kills', win  |   earned gpm, lose  |     earned gpm, win |    golddiffat25, lose |   golddiffat25, win ) |
+|      |    kills, lose |    kills, win  |   earned gpm, lose  |     earned gpm, win |    golddiffat25, lose |   golddiffat25, win   |
 |:-----|---------------:|---------------:|--------------------:|--------------------:|----------------------:|----------------------:|
 | top  |       1.545    |        2.97136 |            221.011  |             286.53  |              -825.19  |               825.19  |
 | jng  |       1.48578  |        2.71763 |            162.365  |             227.653 |              -854.782 |               854.782 |
@@ -183,7 +183,7 @@ For esports data, it is critical to minimize both false positives and false nega
 
 The baseline model is a Logistic Regression classifier used to predict whether a team wins or loses a match (binary classification). The model uses both quantitative and nominal features to evaluate in-game performance and team dynamics. Features in the Baseline Model inlcude one quantitative features `earned gpm` and one nominal feature `position`. `earned gpm` is standardized using a StandardScaler to normalize the scale and improve model performance. `position` is encoded using OneHotEncoder to convert the categorical position variable into binary columns for each role. A Logistic Regression classifier was chosen as the baseline because it is simple and provides a benchmark for more complex models.
 
-After fitting the model,the precision is **0.84** for winning classes (win = 1) and , **0.84** for losing classes (loss = 0). This indicates that when the model predicts a win or loss, 84% of those predictions about winning is correct and 83% of those predictions about losing is correct. The recall for class 0 (loss) is **0.84**, meaning 84% of actual losses are correctly identified by the model. The recall for class 1 (win) is **0.82**, meaning 81% of actual wins are correctly identified by the model. Both classes have F1-scores around **0.83**, showing a good balance between precision and recall. The overall accuracy is **0.83**, meaning the model correctly predicts match outcomes 83% of the time. The ROC-AUC score is **0.91**, indicating that the model performs well at distinguishing between the two classes across various probability thresholds. The Baseline Model demonstrates balanced performance: The precision, recall, and F1-scores are consistent for both classes, showing that the model does not heavily favor one outcome over the other. However, there are limitations to the Baseline Model. While the performance is reasonable, a logistic regression model might not fully capture complex interactions between features like `earned gpm`, `golddiffat25`, and `kills` because it assumes linearity.
+After fitting the model,the precision is **0.84** for winning classes (win = 1) and , **0.82** for losing classes (loss = 0). This indicates that when the model predicts a win or loss, 84% of those predictions about winning is correct and 82% of those predictions about losing is correct. The recall for class 0 (loss) is **0.84**, meaning 84% of actual losses are correctly identified by the model. The recall for class 1 (win) is **0.82**, meaning 82% of actual wins are correctly identified by the model. Both classes have F1-scores around **0.83**, showing a good balance between precision and recall. The overall accuracy is **0.83**, meaning the model correctly predicts match outcomes 83% of the time. The ROC-AUC score is **0.9**, indicating that the model performs well at distinguishing between the two classes across various probability thresholds. The Baseline Model demonstrates balanced performance: The precision, recall, and F1-scores are consistent for both classes, showing that the model does not heavily favor one outcome over the other. However, there are limitations to the Baseline Model. While the performance is reasonable, a logistic regression model might not fully capture complex interactions between features like `earned gpm`, `golddiffat25`, and `kills` because it assumes linearity.
 
 The baseline model provides a good starting point, with metrics indicating consistent and balanced performance. However, the addition of engineered features and more sophisticated models could improve performance further.
 
@@ -203,9 +203,32 @@ This feature measures how a player's kills contribute to their team's overall go
 
 Polynomial features (e.g., squared terms) allow the model to capture non-linear relationships in the data. For example, diminishing returns on gold or kills might exist, where extreme values behave differently than moderate ones. Non-linear relationships between metrics such as GPM, kills, and gold difference often arise in esports data. Squared terms help capture these patterns, improving the model's predictive power.
 
+The Final Model uses a Random Forest Classifier, chosen for its robustness to non-linear relationships, ability to handle feature interactions implicitly, and resilience to overfitting when properly tuned. Additionally, Random Forest provides feature importance scores, making it more interpretable and useful for identifying the most influential predictors. Its versatility makes it particularly well-suited for tabular datasets with mixed feature types, such as numerical and categorical features.
 
-The Final Model uses Random Forest Classifier because it is robust to non-linear relationships, can handle feature interactions implicitly, and provides feature importance scores for better interpretability. It also performs well on tabular data with mixed feature types. Hyperparameters are selected by GridSearchCV: it performed an exhaustive search over a grid of hyperparameters with 3-fold cross-validation on the training data.
+Hyperparameters for the model were selected using GridSearchCV, which performed an exhaustive search over a predefined grid of hyperparameters. This approach ensured that the optimal combination of hyperparameters was identified for maximizing the model's performance. The grid search included 3-fold cross-validation on the training dataset to validate each hyperparameter combination.
+
+The best hyperparameters obtained through this process were:
+
+- classifier__max_depth: 10
+(Limits the depth of trees to prevent overfitting and capture essential patterns.)
+- classifier__max_features: 'log2'
+(Specifies the number of features considered when looking for the best split, improving efficiency.)
+- classifier__min_samples_split: 5
+(Ensures splits occur only when a node contains at least 5 samples, balancing model complexity and performance.)
+- classifier__n_estimators: 500
+(Uses 500 decision trees to ensure stable and reliable predictions.)
+
+Compare to Baseline Model, Final Model likely had higher precision, recall, and F1-scores due to the existence of feature preprocessing and hyperparameter tuning. The ROC-AUC score of **0.92** further supports that the model performs well in distinguishing between the two classes, even across different thresholds.
 
 
+## Fairness Analysis
+
+In this section, we are going to assess if our model is fair among different groups. The question we are trying to answer here is: “does my model perform differently for mid laners and bot laners?" To answer this question, we performed a permutation test and examined the result of the difference in accuracy between the two groups. Group X is players in the position "mid" and Group Y is players in the position "bot".
+
+**Null Hypothesis**: The model is fair. Its precision for "mid" players and "bot" players is the same, and any differences are due to random chance.
+
+**Alternative Hypothesis**: The model is unfair. Its precision for "mid" players is different from its precision for "bot" players.
+
+After conducting the permutation test, we obtained a p-value of 0.687, which exceeds the 0.05 significance level. As a result, we do not reject the null hypothesis. This finding indicates that the model predicts players from both groups with comparable precision levels. Therefore, the model demonstrates fairness, showing no significant bias towards either group based on the evaluated criteria.
 
 
