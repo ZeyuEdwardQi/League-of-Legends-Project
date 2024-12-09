@@ -1,45 +1,43 @@
 
 # Statistical Analysis of Gold Metrics in League of Legends
 
-This a comprehensive data science project conducted at UCSD. The project includes various parts of analysis, starting from exploratory data analysis to hypothesis testing, creation of baseline models, and concluding with fairness analysis. The primary focus of the project is to investigate the most influential playerin League of Legends in 2018 by evaluating matches and impact on match statistics and outcomes.
+This a comprehensive data science project conducted at UCSD. The project includes various parts of analysis, starting from exploratory data analysis to hypothesis testing, creation of baseline and final models, and concluding with fairness analysis. The primary focus of the project is to investigate influence of gold metrics in League of Legends in 2018 by evaluating matches and impact on match statistics and outcomes.
 
 Author: Zeyu Qi
 
 ## Introduction
+
 ### General Introduction
 
 League of Legends is one of the most popular video games developed by riot games. With a thriving competitive scene and millions of active players, it has established itself as one of the premier esports in the gaming industry. Professional matches in LoL are meticulously analyzed and followed by fans worldwide, making them a valuable resource for performance analysis and predictive modeling. The data set we will be working with is a professional data set that’s developed by Oracle’s Elixir. The file records match data from professional LOL esports gaming matches in 2018.
 
 The dataset includes key gameplay statistics from a collection of LOL pro matches. It encompasses various aspects, including individual player performance metrics, team strategies, in-game statistics, and the overall flow and dynamics of the matches.
 
-In League of Legends (LoL), the concept of "gold" plays a pivotal role, acting as a crucial determinant in the trajectory of a match. Gold is an in-game resource that players earn through various actions, such as:
-defeating Minions, killing monsters, taking down turrets, champion kills and assists, and 
-passive income. Beyond its direct influence on the scoreboard, gold profoundly impacts the flow of gameplay, shaping the strategies, dynamics, and potential outcomes as the match progresses.
+In League of Legends (LoL), the concept of "gold" plays a pivotal role, acting as a crucial determinant in the trajectory of a match. Gold is an in-game resource that players earn through various actions, such as: defeating minions, killing monsters, taking down turrets, champion kills and assists, and passive income. Beyond its direct influence on the scoreboard, gold profoundly impacts the flow of gameplay, shaping the strategies, dynamics, and potential outcomes as the match progresses.
 
 The central question of the project is: **to what extent does gold has to other gaming statistics in the data set**? The aim is to utilize data analysis techniques to evaluate the impact of gold on various gaming metrics, including individual player performance, team strategies, in-game dynamics, and overall match outcomes. Building on these insights, I seek to develop a predictive model capable of game results based on the analyzed statistics. This model holds significant potential to enhance strategic decision-making and elevate the overall gameplay experience.
 
+### Column Introduction
 
- ### Column Introduction
+The dataset introduces a comprehensive dataframe with columns of gameplay metrics and match outcomes from professional League of Legends esports matches. There are 80904 rows and 161 columns in this dataset. However, only a number of columns are important to the project. Here’s a brief introduction to each of these columns:
 
- The dataset introduces a comprehensive dataframe with columns of gameplay metrics and match outcomes from professional League of Legends esports matches. There are 80904 rows and 161 columns in this dataset. However, only a number of columns are important to the project. Here’s a brief introduction to each of these columns:
+- `league`: This column identifies the professional esports league in which the match was played (e.g., LCS, LEC, LCK). It provides context about the level of competition and regional influences on gameplay strategies and dynamics.
 
- 	- `league`: This column identifies the professional esports league in which the match was played (e.g., LCS, LEC, LCK). It provides context about the level of competition and regional influences on gameplay strategies and dynamics.
+- `position`: This column specifies the in-game role or lane assigned to a player during the match. Common positions in League of Legends include: top, jungle, mid, bot, and sup. 
 
- 	- `position`: This column specifies the in-game role or lane assigned to a player during the match. Common positions in League of Legends include: top, jungle, mid, bot, and sup. 
+- `result`: This column represents the outcome of the match for the corresponding team or player, typically encoded as a binary value: 1 indicates a win and 0 indicates a loss.
 
- 	- `result`: This column represents the outcome of the match for the corresponding team or player, typically encoded as a binary value: 1 indicates a win and 0 indicates a loss.
+- `kills`: This column indicates the number of enemy champions a player or team has successfully eliminated during the match.
 
- 	- `kills`: This column indicates the number of enemy champions a player or team has successfully eliminated during the match.
+- `deaths`: This column represents the number of times a player or champion was eliminated by the enemy team during the match.
 
- 	- `deaths`: This column represents the number of times a player or champion was eliminated by the enemy team during the match.
+- `assists`: This column captures the number of times a player contributed to the elimination of an enemy champion, without landing the final blow.
 
- 	- `assists`: This column captures the number of times a player contributed to the elimination of an enemy champion, without landing the final blow.
+- `earned gpm`: This column represents the average amount of gold a player or team earns per minute during the match. It is a critical metric for assessing economic efficiency and resource generation.
 
- 	- `earned gpm`: This column represents the average amount of gold a player or team earns per minute during the match. It is a critical metric for assessing economic efficiency and resource generation.
+- `golddiffat10`: This column represents the difference in total gold between a player’s team and the opposing team at the 10-minute mark in the game.
 
- 	- `golddiffat10`: This column represents the difference in total gold between a player’s team and the opposing team at the 10-minute mark in the game.
-
- 	- `golddiffat25`: This column represents the difference in total gold between a player’s team and the opposing team at the 25-minute mark in the game.
+- `golddiffat25`: This column represents the difference in total gold between a player’s team and the opposing team at the 25-minute mark in the game.
 
 
 ## Data Cleaning and Exploratory Data Analysis
@@ -78,7 +76,7 @@ This histogram represents the distribution of the "earned gpm" (gold per minute)
 Another univariate analysis is performed on the kills statistics in the dataset. 
 
 <iframe
-  src="assets/KillsDistribution.html"
+  src="assets/killsDistribution.html"
   width="800"
   height="600"
   frameborder="0"
@@ -101,7 +99,7 @@ This scatter plot illustrates the relationship between the number of kills and e
 
 ### Interesting Aggregates
 
-|      |   ('kills', 0) |   ('kills', 1) |   ('earned gpm', 0) |   ('earned gpm', 1) |   ('golddiffat25', 0) |   ('golddiffat25', 1) |
+|      |    kills, lose |   kills', win  |   earned gpm, lose  |     earned gpm, win |    golddiffat25, lose |   golddiffat25, win ) |
 |:-----|---------------:|---------------:|--------------------:|--------------------:|----------------------:|----------------------:|
 | top  |       1.545    |        2.97136 |            221.011  |             286.53  |              -825.19  |               825.19  |
 | jng  |       1.48578  |        2.71763 |            162.365  |             227.653 |              -854.782 |               854.782 |
@@ -117,7 +115,7 @@ This table highlights the role-specific contributions to match outcomes in Leagu
 
 ### NMAR Analysis
 
-In the dataset, it is plausible that the column golddiffat25 could be Not Missing At Random (NMAR). This is because the missingness in this column might depend on the value itself. For example, if a match ends early due to a surrender or decisive victory, there might be no recorded gold difference at 25 minutes, as the match did not reach that time point. In such a case, the missingness directly depends on the outcome of the match and the game duration, making it NMAR.
+In the dataset, it is plausible that the column `golddiffat25` could be Not Missing At Random (NMAR). This is because the missingness in this column might depend on the value itself. For example, if a match ends early due to a surrender or decisive victory, there might be no recorded gold difference at 25 minutes, as the match did not reach that time point. In such a case, the missingness directly depends on the outcome of the match and the game duration, making it NMAR.
 
 ### Missingness Dependency
 
@@ -193,15 +191,15 @@ The baseline model provides a good starting point, with metrics indicating consi
 
 There are several features added into the Final Model. 
 
-1. kills_x_gpm (Kills × Earned GPM):
+- kills_x_gpm (Kills × Earned GPM):
 
 This interaction term captures the synergy between a player's ability to secure kills and their efficiency in acquiring resources (gold). A player with a high kill count and high GPM likely contributes more significantly to their team's success, making this feature a valuable predictor for match outcomes. In professional League of Legends games, kills often lead to additional resources, creating a snowball effect. By combining these two metrics, the model can better understand the combined impact of aggression and resource management.
 
-2. kills_x_golddiff (Kills × Gold Difference at 25 Minutes):
+- kills_x_golddiff (Kills × Gold Difference at 25 Minutes):
 
 This feature measures how a player's kills contribute to their team's overall gold advantage at a crucial stage of the game (25 minutes). Teams with higher gold differences often have a stronger chance of winning, and this feature quantifies the importance of individual contributions. Gold difference at 25 minutes is a well-known predictor of match outcomes in professional League of Legends games. Combining it with kills highlights players who directly influence team success.
 
-3. Polynomial Terms (Second-Order Interactions):
+- Polynomial Terms (Second-Order Interactions):
 
 Polynomial features (e.g., squared terms) allow the model to capture non-linear relationships in the data. For example, diminishing returns on gold or kills might exist, where extreme values behave differently than moderate ones. Non-linear relationships between metrics such as GPM, kills, and gold difference often arise in esports data. Squared terms help capture these patterns, improving the model's predictive power.
 
